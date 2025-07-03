@@ -1,0 +1,36 @@
+[project]
+name = "staidrept-postural-eval"
+version = "1.0.0"
+description = "API for analyzing postural angles from images using MediaPipe and FastAPI"
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "fastapi[standard]==0.115.14",
+    "pillow",
+    "mediapipe",
+    "opencv-python",
+    "numpy",
+    "python-multipart",
+]
+
+[dependency-groups]
+dev = [
+    "pytest",
+    "requests",
+]
+
+[tool.pytest.ini_options]
+# Configure pytest behavior
+testpaths = ["."]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+# Custom markers
+markers = [
+    "integration: marks tests as integration tests (require running server)",
+]
+# Optionally filter warnings if needed
+# filterwarnings = [
+#     "ignore::DeprecationWarning",
+#     "ignore::PendingDeprecationWarning",
+# ] 

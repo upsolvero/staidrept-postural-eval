@@ -213,7 +213,6 @@ $RECYCLE.BIN/
 
 # Project specific files
 # Add any project-specific files or directories here
-uv.lock
 .uvenv/
 
 # Local development files

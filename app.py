@@ -6,6 +6,7 @@ import cv2
 import numpy as np
 import mediapipe as mp
 import math
+import base64
 
 app = Flask(__name__)
 CORS(app)
@@ -115,20 +116,27 @@ def analyze_pose_angles(img):
         angle_results["error"] = "No pose detected"
     return angle_results
 
-@app.route('/analyze_image', methods=['POST'])
+@app.route('/analyze-image', methods=['POST'])
 def analyze_image():
     img = Image.open(request.files['file']).convert("RGB")
-    img = analyze_pose_draw(img)
-    img_io = io.BytesIO()
-    img.save(img_io, 'JPEG')
-    img_io.seek(0)
-    return send_file(img_io, mimetype='image/jpeg')
-
-@app.route('/analyze_angles', methods=['POST'])
-def analyze_angles():
-    img = Image.open(request.files['file']).convert("RGB")
+    
+    # Get angle results first
     angle_results = analyze_pose_angles(img)
-    return jsonify(angle_results)
+    
+    # Create processed image with pose analysis drawn
+    processed_img = analyze_pose_draw(img)
+    
+    # Convert processed image to base64
+    img_io = io.BytesIO()
+    processed_img.save(img_io, 'JPEG')
+    img_io.seek(0)
+    img_base64 = base64.b64encode(img_io.getvalue()).decode('utf-8')
+    
+    # Return both image and angle results in JSON
+    return jsonify({
+        'image': f'data:image/jpeg;base64,{img_base64}',
+        'angles': angle_results
+    })
 
 if __name__ == "__main__":
     app.run()
